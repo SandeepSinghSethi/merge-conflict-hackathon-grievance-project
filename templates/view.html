@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════════════════════════════════════
-   TOKENS & RESET (identical to index.html for consistency)
+   TOKENS & RESET
    ══════════════════════════════════════════════════════════════════════════ */
 :root {
     --bg-base:       #0a0c10;
@@ -30,9 +30,16 @@
 
     --green:         #4ade80;
     --green-dim:     rgba(74,222,128,0.12);
+    --green-border:  rgba(74,222,128,0.25);
     --red:           #f87171;
     --red-dim:       rgba(248,113,113,0.12);
+    --red-border:    rgba(248,113,113,0.25);
     --amber:         #fbbf24;
+    --amber-dim:     rgba(251,191,36,0.12);
+    --amber-border:  rgba(251,191,36,0.25);
+    --blue:          #60a5fa;
+    --blue-dim:      rgba(96,165,250,0.12);
+    --blue-border:   rgba(96,165,250,0.25);
 
     --radius:        12px;
     --radius-lg:     18px;
@@ -52,105 +59,116 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   AMBIENT BACKGROUND
+   AMBIENT BG
    ══════════════════════════════════════════════════════════════════════════ */
-.bg-orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; opacity: .18; }
-.bg-orb--1 { width: 440px; height: 440px; background: #2e4a8f; top: -140px; right: -120px; }
-.bg-orb--2 { width: 380px; height: 380px; background: #7c5cbf; bottom: -100px; left: -100px; }
-.bg-orb--3 { width: 260px; height: 260px; background: #3a5f8f; top: 45%; left: 55%; transform: translate(-50%,-50%); }
+.bg-orb { position:fixed; border-radius:50%; filter:blur(120px); pointer-events:none; z-index:0; opacity:.18; }
+.bg-orb--1 { width:440px; height:440px; background:#2e4a8f; top:-140px; right:-120px; }
+.bg-orb--2 { width:380px; height:380px; background:#7c5cbf; bottom:-100px; left:-100px; }
+.bg-orb--3 { width:260px; height:260px; background:#3a5f8f; top:45%; left:55%; transform:translate(-50%,-50%); }
 
 /* ══════════════════════════════════════════════════════════════════════════
    NAV
    ══════════════════════════════════════════════════════════════════════════ */
 nav {
-    position: relative; z-index: 10;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 22px 40px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(10,12,16,.7);
-    backdrop-filter: blur(14px);
+    position:relative; z-index:10;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 40px;
+    border-bottom:1px solid var(--border);
+    background:rgba(10,12,16,.7);
+    backdrop-filter:blur(14px);
 }
-.nav-brand { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 600; color: var(--text-primary); letter-spacing: -.5px; text-decoration: none; }
-.nav-brand span { color: var(--accent); }
-.nav-links { display: flex; gap: 8px; }
-.nav-links a { color: var(--text-secondary); text-decoration: none; font-size: .82rem; font-weight: 500; padding: 7px 16px; border-radius: var(--radius-sm); transition: all .2s; letter-spacing: .3px; text-transform: uppercase; }
-.nav-links a:hover { background: var(--bg-elevated); color: var(--text-primary); }
-.nav-links a.active { background: var(--accent-dim); color: var(--accent); }
+.nav-brand { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:600; color:var(--text-primary); letter-spacing:-.5px; text-decoration:none; }
+.nav-brand span { color:var(--accent); }
+.nav-links { display:flex; gap:8px; }
+.nav-links a { color:var(--text-secondary); text-decoration:none; font-size:.82rem; font-weight:500; padding:7px 16px; border-radius:var(--radius-sm); transition:all .2s; letter-spacing:.3px; text-transform:uppercase; }
+.nav-links a:hover { background:var(--bg-elevated); color:var(--text-primary); }
+.nav-links a.active { background:var(--accent-dim); color:var(--accent); }
 
 /* ══════════════════════════════════════════════════════════════════════════
    HERO
    ══════════════════════════════════════════════════════════════════════════ */
-.hero { position: relative; z-index: 2; text-align: center; padding: 72px 24px 48px; }
+.hero { position:relative; z-index:2; text-align:center; padding:72px 24px 48px; }
 .hero__tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--accent-dim); color: var(--accent);
-    font-size: .72rem; font-weight: 500;
-    padding: 5px 14px; border-radius: 100px;
-    letter-spacing: .8px; text-transform: uppercase; margin-bottom: 22px;
+    display:inline-flex; align-items:center; gap:6px;
+    background:var(--accent-dim); color:var(--accent);
+    font-size:.72rem; font-weight:500;
+    padding:5px 14px; border-radius:100px;
+    letter-spacing:.8px; text-transform:uppercase; margin-bottom:22px;
 }
-.hero__tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); animation: pulse 2s infinite; }
+.hero__tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); animation:pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 .hero__title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:700; line-height:1.15; color:var(--text-primary); max-width:620px; margin:0 auto 14px; }
 .hero__title em { font-style:italic; color:var(--accent); }
 .hero__sub { color:var(--text-secondary); font-size:.9rem; font-weight:300; max-width:480px; margin:0 auto; }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   MAIN CARD
+   CARDS
    ══════════════════════════════════════════════════════════════════════════ */
 .main-card { position:relative; z-index:2; max-width:600px; margin:0 auto; padding:0 24px 80px; }
 .card { background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:38px 36px 34px; backdrop-filter:blur(6px); }
+.card + .card { margin-top:20px; }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   FORM
+   FORM FIELDS (shared)
    ══════════════════════════════════════════════════════════════════════════ */
-.field { margin-bottom: 22px; }
+.field { margin-bottom:22px; }
 .field__label { display:block; font-size:.72rem; font-weight:500; text-transform:uppercase; letter-spacing:.7px; color:var(--text-secondary); margin-bottom:8px; }
 .field__label .req { color:var(--accent); margin-left:2px; }
-
-.field input {
-    width:100%; background:var(--bg-elevated); border:1.5px solid var(--border); border-radius:var(--radius);
-    color:var(--text-primary); font-family:'Inter',sans-serif; font-size:.88rem;
-    padding:13px 16px; height:46px; outline:none; transition:border-color .2s, box-shadow .2s;
-}
-.field input:focus { border-color:var(--border-focus); box-shadow:0 0 0 3px var(--accent-glow); }
-.field input::placeholder { color:var(--text-muted); }
-
-/* monospace for grievance ID */
-#grievanceId { font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:.2px; }
-
 .field__hint { font-size:.7rem; color:var(--text-muted); margin-top:6px; display:block; }
 
+.field input,
+.field textarea {
+    width:100%; background:var(--bg-elevated); border:1.5px solid var(--border); border-radius:var(--radius);
+    color:var(--text-primary); font-family:'Inter',sans-serif; font-size:.88rem;
+    padding:13px 16px; outline:none; transition:border-color .2s, box-shadow .2s;
+    resize:vertical;
+}
+.field input { height:46px; }
+.field textarea { min-height:90px; }
+.field input:focus,
+.field textarea:focus { border-color:var(--border-focus); box-shadow:0 0 0 3px var(--accent-glow); }
+.field input::placeholder,
+.field textarea::placeholder { color:var(--text-muted); }
+
+#grievanceId { font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:.2px; }
+
 /* ══════════════════════════════════════════════════════════════════════════
-   BUTTON
+   BUTTONS
    ══════════════════════════════════════════════════════════════════════════ */
-.btn-view {
+.btn {
     width:100%; padding:14px 0; border:none; border-radius:var(--radius);
-    background:linear-gradient(135deg,#5b8def,#7c5cbf);
     color:#fff; font-family:'Inter',sans-serif; font-size:.84rem; font-weight:600;
     letter-spacing:.5px; cursor:pointer;
     transition:opacity .2s, transform .1s, box-shadow .2s;
-    position:relative; overflow:hidden; margin-top:4px;
+    position:relative; overflow:hidden;
 }
-.btn-view:hover { opacity:.88; box-shadow:0 4px 24px rgba(93,139,239,.3); }
-.btn-view:active { transform:scale(.985); }
-.btn-view:disabled { opacity:.4; cursor:not-allowed; }
-.btn-view::after { content:''; position:absolute; top:0; left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent); transition:left .5s; }
-.btn-view:hover::after { left:140%; }
+.btn:hover { opacity:.88; }
+.btn:active { transform:scale(.985); }
+.btn:disabled { opacity:.4; cursor:not-allowed; }
+.btn::after { content:''; position:absolute; top:0; left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent); transition:left .5s; }
+.btn:hover::after { left:140%; }
+
+.btn--primary { background:linear-gradient(135deg,#5b8def,#7c5cbf); }
+.btn--primary:hover { box-shadow:0 4px 24px rgba(93,139,239,.3); }
+
+.btn--green { background:linear-gradient(135deg,#16a34a,#15803d); }
+.btn--green:hover { box-shadow:0 4px 24px rgba(22,163,74,.3); }
 
 /* ══════════════════════════════════════════════════════════════════════════
    TOAST
    ══════════════════════════════════════════════════════════════════════════ */
 .toast { display:none; border-radius:var(--radius); padding:16px 20px; margin-top:22px; font-size:.82rem; line-height:1.5; animation:slideDown .3s ease; }
 @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-.toast--error { display:block; background:var(--red-dim); border:1px solid rgba(248,113,113,.25); color:var(--red); }
-.toast--info  { display:block; background:var(--accent-dim); border:1px solid rgba(178,160,255,.2); color:var(--accent); }
-.toast__title { font-weight:600; margin-bottom:4px; }
+.toast--error   { display:block; background:var(--red-dim);    border:1px solid var(--red-border);    color:var(--red);    }
+.toast--success { display:block; background:var(--green-dim);  border:1px solid var(--green-border);  color:var(--green);  }
+.toast--info    { display:block; background:var(--accent-dim); border:1px solid rgba(178,160,255,.2); color:var(--accent); }
+.toast__title { font-weight:600; margin-bottom:3px; }
 .toast__body  { font-weight:300; opacity:.85; }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   RESULT CARD  (shown after successful decrypt)
+   RESULT CARD
    ══════════════════════════════════════════════════════════════════════════ */
-.result { display:none; margin-top:28px; animation:slideDown .35s ease; }
+.result { display:none; }
 .result.visible { display:block; }
 
 .result__header {
@@ -167,7 +185,6 @@ nav {
 .result__badge::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--green); }
 .result__title { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:600; }
 
-/* dept tag */
 .dept-tag {
     display:inline-block;
     background:var(--accent-dim); color:var(--accent);
@@ -175,28 +192,19 @@ nav {
     padding:3px 10px; border-radius:100px;
 }
 
-/* rows */
-.result__row {
-    display:flex; flex-direction:column; gap:4px;
-    padding:14px 0; border-bottom:1px solid var(--border);
-}
+.result__row { display:flex; flex-direction:column; gap:4px; padding:14px 0; border-bottom:1px solid var(--border); }
 .result__row:last-child { border-bottom:none; }
 .result__row-label { font-size:.68rem; font-weight:500; text-transform:uppercase; letter-spacing:.6px; color:var(--text-muted); }
 .result__row-value { font-size:.88rem; color:var(--text-primary); font-weight:400; line-height:1.55; }
 .result__row-value.mono { font-family:'JetBrains Mono',monospace; font-size:.76rem; word-break:break-all; color:var(--text-secondary); }
 
-/* on-chain section */
 .result__chain {
-    margin-top:18px;
-    background:var(--bg-elevated);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding:16px 18px;
+    margin-top:18px; background:var(--bg-elevated); border:1px solid var(--border);
+    border-radius:var(--radius); padding:16px 18px;
 }
 .result__chain-title {
     font-size:.68rem; font-weight:600; text-transform:uppercase; letter-spacing:.6px;
-    color:var(--text-muted); margin-bottom:10px;
-    display:flex; align-items:center; gap:6px;
+    color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:6px;
 }
 .result__chain-title::before { content:'⛓'; }
 .result__chain-row { display:flex; justify-content:space-between; align-items:baseline; padding:5px 0; }
@@ -205,17 +213,116 @@ nav {
 .result__chain-value { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--text-secondary); word-break:break-all; max-width:62%; text-align:right; }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   CARD FOOTER
+   UPDATE CARD
+   ══════════════════════════════════════════════════════════════════════════ */
+.update-card { display:none; }
+.update-card.visible { display:block; }
+
+.card-header {
+    display:flex; align-items:center; gap:10px;
+    padding-bottom:18px; border-bottom:1px solid var(--border); margin-bottom:24px;
+}
+.card-header__icon {
+    width:34px; height:34px; border-radius:50%;
+    background:var(--accent-dim); border:1px solid rgba(178,160,255,.2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.9rem;
+}
+.card-header__text h3 { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:600; }
+.card-header__text p  { font-size:.72rem; color:var(--text-muted); margin-top:2px; }
+
+/* status chips */
+.status-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.status-chip {
+    background:var(--bg-elevated); border:1.5px solid var(--border);
+    border-radius:var(--radius); padding:11px 14px 11px 40px;
+    cursor:pointer; transition:all .2s; position:relative; user-select:none;
+}
+.status-chip:hover { border-color:rgba(178,160,255,.25); background:var(--bg-hover); }
+.status-chip input[type="radio"] {
+    position:absolute; left:13px; top:50%; transform:translateY(-50%);
+    width:16px; height:16px; accent-color:var(--accent); cursor:pointer;
+}
+.status-chip__name { font-size:.82rem; font-weight:500; color:var(--text-primary); }
+.status-chip__dot  { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:7px; vertical-align:middle; }
+
+/* per-status colours */
+.status-chip[data-status="Pending"].selected   { border-color:var(--amber);  background:var(--amber-dim);  box-shadow:0 0 0 3px var(--amber-border); }
+.status-chip[data-status="InProgress"].selected{ border-color:var(--blue);   background:var(--blue-dim);   box-shadow:0 0 0 3px var(--blue-border); }
+.status-chip[data-status="Resolved"].selected  { border-color:var(--green);  background:var(--green-dim);  box-shadow:0 0 0 3px var(--green-border); }
+.status-chip[data-status="Rejected"].selected  { border-color:var(--red);    background:var(--red-dim);    box-shadow:0 0 0 3px var(--red-border); }
+
+.dot--pending    { background:var(--amber); }
+.dot--inprogress { background:var(--blue); }
+.dot--resolved   { background:var(--green); }
+.dot--rejected   { background:var(--red); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TIMELINE
+   ══════════════════════════════════════════════════════════════════════════ */
+.timeline-card { display:none; }
+.timeline-card.visible { display:block; }
+
+.timeline { position:relative; padding-left:28px; }
+.timeline::before {
+    content:''; position:absolute; left:10px; top:0; bottom:0;
+    width:1px; background:var(--border);
+}
+.timeline__item {
+    position:relative; padding:0 0 22px;
+}
+.timeline__item:last-child { padding-bottom:0; }
+
+/* the circle on the line */
+.timeline__dot {
+    position:absolute; left:-28px; top:3px;
+    width:21px; height:21px; border-radius:50%;
+    border:2.5px solid var(--bg-surface);
+    display:flex; align-items:center; justify-content:center;
+}
+.timeline__dot--pending    { background:var(--amber); }
+.timeline__dot--inprogress { background:var(--blue); }
+.timeline__dot--resolved   { background:var(--green); }
+.timeline__dot--rejected   { background:var(--red); }
+
+.timeline__header { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+
+.timeline__status-badge {
+    font-size:.7rem; font-weight:600; letter-spacing:.4px; text-transform:uppercase;
+    padding:3px 9px; border-radius:100px;
+}
+.badge--pending    { background:var(--amber-dim);  color:var(--amber); }
+.badge--inprogress { background:var(--blue-dim);   color:var(--blue); }
+.badge--resolved   { background:var(--green-dim);  color:var(--green); }
+.badge--rejected   { background:var(--red-dim);    color:var(--red); }
+
+.timeline__time { font-size:.68rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace; }
+
+.timeline__note {
+    margin-top:8px; padding:10px 13px;
+    background:var(--bg-elevated); border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    font-size:.8rem; color:var(--text-secondary); line-height:1.5;
+}
+.timeline__note-label { font-size:.66rem; font-weight:600; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted); margin-bottom:3px; }
+
+.timeline__empty {
+    font-size:.82rem; color:var(--text-muted);
+    text-align:center; padding:18px 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SPINNER
+   ══════════════════════════════════════════════════════════════════════════ */
+.spinner { display:inline-block; width:16px; height:16px; border-radius:50%; border:2px solid var(--accent-glow); border-top-color:var(--accent); animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FOOTER
    ══════════════════════════════════════════════════════════════════════════ */
 .card-footer { text-align:center; margin-top:28px; font-size:.75rem; color:var(--text-muted); }
 .card-footer a { color:var(--accent); text-decoration:none; }
 .card-footer a:hover { text-decoration:underline; }
-
-/* ══════════════════════════════════════════════════════════════════════════
-   LOADING SPINNER (inline)
-   ══════════════════════════════════════════════════════════════════════════ */
-.spinner { display:inline-block; width:16px; height:16px; border-radius:50%; border:2px solid var(--accent-glow); border-top-color:var(--accent); animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
-@keyframes spin { to{transform:rotate(360deg)} }
 
 /* ══════════════════════════════════════════════════════════════════════════
    RESPONSIVE
@@ -225,6 +332,7 @@ nav {
     .card { padding:28px 22px 26px; }
     .result__chain-row { flex-direction:column; gap:2px; }
     .result__chain-value { max-width:100%; text-align:left; }
+    .status-grid { grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -243,38 +351,34 @@ nav {
 </nav>
 
 <header class="hero">
-    <div class="hero__tag">Decrypt &amp; Verify</div>
-    <h1 class="hero__title">Retrieve your<br><em>grievance</em></h1>
-    <p class="hero__sub">Enter your Grievance ID and the password you used during submission to decrypt and view your complaint.</p>
+    <div class="hero__tag">Decrypt &amp; Manage</div>
+    <h1 class="hero__title">View &amp; update your<br><em>grievance</em></h1>
+    <p class="hero__sub">Enter your Grievance ID and password to decrypt, view, and push status updates onto the blockchain.</p>
 </header>
 
 <div class="main-card">
-    <div class="card">
 
-        <!-- Grievance ID -->
+    <!-- ═══ CARD 1: Decrypt form ═══ -->
+    <div class="card">
         <div class="field">
             <label class="field__label" for="grievanceId">Grievance ID <span class="req">*</span></label>
             <input type="text" id="grievanceId" placeholder="Paste your Solana grievance pubkey …" autocomplete="off" spellcheck="false" />
             <span class="field__hint">This is the ID you received when you submitted your grievance.</span>
         </div>
-
-        <!-- Password -->
         <div class="field">
             <label class="field__label" for="password">Decryption Password <span class="req">*</span></label>
             <input type="password" id="password" placeholder="Enter your submission password" autocomplete="off" />
             <span class="field__hint">This must match the password you used when filing the grievance.</span>
         </div>
+        <button class="btn btn--primary" id="viewBtn" disabled>Decrypt &amp; View</button>
 
-        <!-- Button -->
-        <button class="btn-view" id="viewBtn" disabled>Decrypt &amp; View</button>
-
-        <!-- Toast (errors) -->
+        <!-- toast lives here -->
         <div class="toast" id="toast">
             <div class="toast__title" id="toastTitle"></div>
             <div class="toast__body"  id="toastBody"></div>
         </div>
 
-        <!-- Result card -->
+        <!-- result (grievance details) appears here after decrypt -->
         <div class="result" id="resultCard">
             <div class="result__header">
                 <div class="result__header-left">
@@ -283,7 +387,6 @@ nav {
                 </div>
                 <span class="dept-tag" id="resDept"></span>
             </div>
-
             <div class="result__row">
                 <span class="result__row-label">Message</span>
                 <span class="result__row-value" id="resMessage"></span>
@@ -300,8 +403,6 @@ nav {
                 <span class="result__row-label">IPFS CID</span>
                 <span class="result__row-value mono" id="resCid"></span>
             </div>
-
-            <!-- On-chain info -->
             <div class="result__chain">
                 <div class="result__chain-title">On-chain Verification</div>
                 <div class="result__chain-row">
@@ -323,34 +424,115 @@ nav {
             Want to file a new one? <a href="/">Submit a grievance →</a>
         </div>
     </div>
-</div>
+
+    <!-- ═══ CARD 2: Update status ═══ -->
+    <div class="card update-card" id="updateCard">
+        <div class="card-header">
+            <div class="card-header__icon">🔄</div>
+            <div class="card-header__text">
+                <h3>Update Status</h3>
+                <p>Push a new status onto the blockchain</p>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="field__label">New Status <span class="req">*</span></label>
+            <div class="status-grid" id="statusGrid">
+                <label class="status-chip" data-status="Pending">
+                    <input type="radio" name="newStatus" value="Pending" />
+                    <span class="status-chip__dot dot--pending"></span>
+                    <span class="status-chip__name">Pending</span>
+                </label>
+                <label class="status-chip" data-status="InProgress">
+                    <input type="radio" name="newStatus" value="InProgress" />
+                    <span class="status-chip__dot dot--inprogress"></span>
+                    <span class="status-chip__name">In Progress</span>
+                </label>
+                <label class="status-chip" data-status="Resolved">
+                    <input type="radio" name="newStatus" value="Resolved" />
+                    <span class="status-chip__dot dot--resolved"></span>
+                    <span class="status-chip__name">Resolved</span>
+                </label>
+                <label class="status-chip" data-status="Rejected">
+                    <input type="radio" name="newStatus" value="Rejected" />
+                    <span class="status-chip__dot dot--rejected"></span>
+                    <span class="status-chip__name">Rejected</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="field__label" for="noteText">Note <span style="color:var(--text-muted);font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <textarea id="noteText" placeholder="Add context to this status change …"></textarea>
+            <span class="field__hint">Notes are encrypted with your password and pinned to IPFS — only you can read them.</span>
+        </div>
+
+        <button class="btn btn--green" id="updateBtn" disabled>Push Update</button>
+
+        <!-- toast for update results -->
+        <div class="toast" id="updateToast">
+            <div class="toast__title" id="updateToastTitle"></div>
+            <div class="toast__body"  id="updateToastBody"></div>
+        </div>
+    </div>
+
+    <!-- ═══ CARD 3: Status timeline ═══ -->
+    <div class="card timeline-card" id="timelineCard">
+        <div class="card-header">
+            <div class="card-header__icon">📜</div>
+            <div class="card-header__text">
+                <h3>Status History</h3>
+                <p>All on-chain updates for this grievance</p>
+            </div>
+        </div>
+        <div class="timeline" id="timeline">
+            <div class="timeline__empty">No updates yet.</div>
+        </div>
+    </div>
+
+</div><!-- /main-card -->
 
 <script>
 // ══════════════════════════════════════════════════════════════════════════
-// VALIDATION
+// STATE — kept in one place so every section can read it
+// ══════════════════════════════════════════════════════════════════════════
+let STATE = {
+    grievance_id: "",
+    password:     "",
+    decrypted:    false,   // true after a successful /api/view
+};
+
+// ══════════════════════════════════════════════════════════════════════════
+// DECRYPT FORM — validation
 // ══════════════════════════════════════════════════════════════════════════
 const gidEl  = document.getElementById('grievanceId');
 const pwdEl  = document.getElementById('password');
 const viewBtn = document.getElementById('viewBtn');
 
-function validate() {
+function validateDecrypt() {
     viewBtn.disabled = !(gidEl.value.trim().length > 0 && pwdEl.value.length > 0);
 }
-gidEl.addEventListener('input', validate);
-pwdEl.addEventListener('input', validate);
+gidEl.addEventListener('input', validateDecrypt);
+pwdEl.addEventListener('input', validateDecrypt);
 
 // ══════════════════════════════════════════════════════════════════════════
-// TOAST
+// TOAST helpers (two separate toast slots)
 // ══════════════════════════════════════════════════════════════════════════
 function showToast(type, title, body) {
-    const toast   = document.getElementById('toast');
-    toast.className = 'toast toast--' + type;
+    const el = document.getElementById('toast');
+    el.className = 'toast toast--' + type;
     document.getElementById('toastTitle').textContent = title;
     document.getElementById('toastBody').textContent  = body;
 }
-function hideToast() {
-    document.getElementById('toast').className = 'toast';
+function hideToast() { document.getElementById('toast').className = 'toast'; }
+
+function showUpdateToast(type, title, body) {
+    const el = document.getElementById('updateToast');
+    el.className = 'toast toast--' + type;
+    document.getElementById('updateToastTitle').textContent = title;
+    document.getElementById('updateToastBody').textContent  = body;
 }
+function hideUpdateToast() { document.getElementById('updateToast').className = 'toast'; }
 
 // ══════════════════════════════════════════════════════════════════════════
 // RESULT CARD
@@ -363,36 +545,124 @@ function showResult(data) {
     document.getElementById('resGrievancePda').textContent = data.grievance_id;
     document.getElementById('resCreatedBy').textContent    = data.created_by || '—';
 
-    // Format submitted_at nicely
     let subAt = data.submitted_at || '—';
     try { subAt = new Date(data.submitted_at).toLocaleString(); } catch(e) {}
     document.getElementById('resSubmittedAt').textContent = subAt;
 
-    // On-chain timestamp (unix or already a number)
     let chainTs = '—';
     if (data.on_chain && data.on_chain.created_at) {
-        try {
-            // Solana stores as unix seconds
-            chainTs = new Date(Number(data.on_chain.created_at) * 1000).toLocaleString();
-        } catch(e) { chainTs = String(data.on_chain.created_at); }
+        try { chainTs = new Date(Number(data.on_chain.created_at) * 1000).toLocaleString(); }
+        catch(e) { chainTs = String(data.on_chain.created_at); }
     }
     document.getElementById('resChainTimestamp').textContent = chainTs;
 
     document.getElementById('resultCard').classList.add('visible');
 }
-function hideResult() {
-    document.getElementById('resultCard').classList.remove('visible');
+
+// ══════════════════════════════════════════════════════════════════════════
+// STATUS CHIPS (update card)
+// ══════════════════════════════════════════════════════════════════════════
+document.querySelectorAll('.status-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        document.querySelectorAll('.status-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        chip.querySelector('input').checked = true;
+        validateUpdate();
+    });
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// UPDATE FORM — validation
+// ══════════════════════════════════════════════════════════════════════════
+const updateBtn = document.getElementById('updateBtn');
+
+function validateUpdate() {
+    const hasStatus = !!document.querySelector('.status-chip.selected');
+    updateBtn.disabled = !hasStatus;
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// VIEW / DECRYPT
+// TIMELINE renderer
+// ══════════════════════════════════════════════════════════════════════════
+function renderTimeline(updates) {
+    const container = document.getElementById('timeline');
+
+    if (!updates || updates.length === 0) {
+        container.innerHTML = '<div class="timeline__empty">No updates yet.</div>';
+        return;
+    }
+
+    // newest first
+    const sorted = [...updates].reverse();
+
+    container.innerHTML = sorted.map(upd => {
+        const statusLower = upd.status.toLowerCase();
+        let ts = '—';
+        if (upd.updated_at) {
+            try { ts = new Date(Number(upd.updated_at) * 1000).toLocaleString(); }
+            catch(e) { ts = String(upd.updated_at); }
+        }
+
+        let noteHtml = '';
+        if (upd.note) {
+            noteHtml = `
+                <div class="timeline__note">
+                    <div class="timeline__note-label">Note</div>
+                    ${escapeHtml(upd.note)}
+                </div>`;
+        }
+
+        return `
+            <div class="timeline__item">
+                <div class="timeline__dot timeline__dot--${statusLower}"></div>
+                <div class="timeline__header">
+                    <span class="timeline__status-badge badge--${statusLower}">${upd.status}</span>
+                    <span class="timeline__time">${ts}</span>
+                </div>
+                ${noteHtml}
+            </div>`;
+    }).join('');
+}
+
+function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.appendChild(document.createTextNode(str));
+    return d.innerHTML;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// FETCH & RENDER TIMELINE  (called after decrypt and after each update)
+// ══════════════════════════════════════════════════════════════════════════
+async function refreshTimeline() {
+    try {
+        const resp = await fetch('/api/get-updates', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ grievance_id: STATE.grievance_id, password: STATE.password }),
+        });
+        const data = await resp.json();
+        if (data.success) {
+            renderTimeline(data.updates);
+        }
+    } catch(e) {
+        // silent — timeline just stays as-is
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// DECRYPT (view button)
 // ══════════════════════════════════════════════════════════════════════════
 viewBtn.addEventListener('click', async () => {
     const grievanceId = gidEl.value.trim();
     const password    = pwdEl.value;
 
     hideToast();
-    hideResult();
+    // hide downstream cards if re-fetching
+    document.getElementById('resultCard').classList.remove('visible');
+    document.getElementById('updateCard').classList.remove('visible');
+    document.getElementById('timelineCard').classList.remove('visible');
+    STATE.decrypted = false;
+
     viewBtn.disabled = true;
     viewBtn.innerHTML = '<span class="spinner"></span> Decrypting …';
 
@@ -402,20 +672,28 @@ viewBtn.addEventListener('click', async () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ grievance_id: grievanceId, password }),
         });
-
         const data = await resp.json();
 
         if (data.success) {
+            // persist state so update & timeline can use it
+            STATE.grievance_id = grievanceId;
+            STATE.password     = password;
+            STATE.decrypted    = true;
+
             showResult(data);
+
+            // reveal update card + timeline card
+            document.getElementById('updateCard').classList.add('visible');
+            document.getElementById('timelineCard').classList.add('visible');
+
+            // load existing updates
+            await refreshTimeline();
         } else {
             const msg = (data.errors || []).join(' ');
-            if (resp.status === 401) {
-                showToast('error', '✕  Decryption failed', msg);
-            } else if (resp.status === 404) {
-                showToast('error', '✕  Not found', msg);
-            } else {
-                showToast('error', '✕  Error', msg);
-            }
+            showToast('error',
+                resp.status === 401 ? '✕  Decryption failed' :
+                resp.status === 404 ? '✕  Not found' : '✕  Error',
+                msg);
         }
     } catch (err) {
         showToast('error', '✕  Network error', 'Could not reach the server. Check your connection and try again.');
@@ -423,7 +701,61 @@ viewBtn.addEventListener('click', async () => {
 
     viewBtn.disabled = false;
     viewBtn.innerHTML = 'Decrypt &amp; View';
-    validate();
+    validateDecrypt();
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// PUSH UPDATE (update button)
+// ══════════════════════════════════════════════════════════════════════════
+updateBtn.addEventListener('click', async () => {
+    if (!STATE.decrypted) return;
+
+    const selectedChip = document.querySelector('.status-chip.selected');
+    if (!selectedChip) return;
+
+    const status = selectedChip.dataset.status;
+    const note   = document.getElementById('noteText').value.trim();
+
+    hideUpdateToast();
+    updateBtn.disabled = true;
+    updateBtn.innerHTML = '<span class="spinner"></span> Pushing …';
+
+    try {
+        const resp = await fetch('/api/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                grievance_id: STATE.grievance_id,
+                status:       status,
+                note:         note,
+                password:     STATE.password,
+            }),
+        });
+        const data = await resp.json();
+
+        if (data.success) {
+            if (data.already_exists) {
+                showUpdateToast('info', '⚠  Already exists',
+                    `A status update at this position already exists on-chain. No duplicate was written.`);
+            } else {
+                showUpdateToast('success', '✓  Status updated',
+                    `"${status}" has been recorded on the blockchain.` +
+                    (data.note_cid ? ` Note pinned to IPFS.` : ''));
+            }
+            // clear the note box
+            document.getElementById('noteText').value = '';
+            // refresh timeline
+            await refreshTimeline();
+        } else {
+            showUpdateToast('error', '✕  Update failed', (data.errors || []).join(' '));
+        }
+    } catch(err) {
+        showUpdateToast('error', '✕  Network error', 'Could not reach the server.');
+    }
+
+    updateBtn.disabled = false;
+    updateBtn.innerHTML = 'Push Update';
+    validateUpdate();
 });
 </script>
 </body>
