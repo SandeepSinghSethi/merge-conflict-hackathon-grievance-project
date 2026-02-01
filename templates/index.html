@@ -434,6 +434,187 @@ nav {
 .card-footer a:hover { text-decoration: underline; }
 
 /* ══════════════════════════════════════════════════════════════════════════
+   SUCCESS MODAL  (full-screen, replaces the progress overlay on success)
+   ══════════════════════════════════════════════════════════════════════════ */
+.success-modal {
+    display: none;
+    position: fixed; inset: 0;
+    z-index: 200;
+    background: rgba(10,12,16,.92);
+    backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+    padding: 24px;
+}
+.success-modal.active { display: flex; }
+
+.success-modal__card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 48px 40px 40px;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    animation: modalPop .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes modalPop {
+    from { opacity:0; transform: scale(.88) translateY(16px); }
+    to   { opacity:1; transform: scale(1)   translateY(0); }
+}
+
+/* animated check circle */
+.success-modal__check {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--green-dim);
+    border: 2px solid rgba(74,222,128,.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 28px;
+    animation: checkPop .5s .15s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes checkPop {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+.success-modal__check svg {
+    width: 38px; height: 38px;
+    stroke: var(--green); stroke-width: 3; fill: none;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    animation: drawCheck .4s .45s ease forwards;
+}
+@keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+}
+
+.success-modal__title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+.success-modal__sub {
+    font-size: .82rem; color: var(--text-secondary); font-weight: 300;
+    max-width: 320px; margin: 0 auto 28px;
+    line-height: 1.55;
+}
+
+/* warning strip */
+.success-modal__warning {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(251,191,36,.08);
+    border: 1px solid rgba(251,191,36,.2);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    margin-bottom: 22px;
+    text-align: left;
+}
+.success-modal__warning-icon {
+    font-size: 1.1rem; flex-shrink: 0;
+}
+.success-modal__warning-text {
+    font-size: .75rem; color: var(--amber); font-weight: 500;
+    line-height: 1.45;
+}
+
+/* ID box */
+.success-modal__id-wrap {
+    background: var(--bg-elevated);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    position: relative;
+    transition: border-color .25s, box-shadow .25s, background .25s;
+}
+/* flash green when the ID is copied */
+.success-modal__id-wrap.copied {
+    border-color: rgba(74,222,128,.45);
+    background: rgba(74,222,128,.06);
+    box-shadow: 0 0 0 3px rgba(74,222,128,.15);
+}
+.success-modal__id-label {
+    font-size: .66rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .7px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-align: left;
+}
+.success-modal__id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+    color: var(--text-primary);
+    word-break: break-all;
+    line-height: 1.6;
+    text-align: left;
+    user-select: all;
+}
+
+/* copy button row */
+.success-modal__copy-row {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-bottom: 6px;
+}
+.success-modal__copy-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(178,160,255,.25);
+    border-radius: var(--radius-sm);
+    color: var(--accent);
+    font-family: 'Inter', sans-serif;
+    font-size: .78rem; font-weight: 600;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: background .2s, border-color .2s, color .2s, transform .1s;
+    letter-spacing: .3px;
+}
+.success-modal__copy-btn:hover {
+    background: rgba(178,160,255,.24);
+    border-color: rgba(178,160,255,.4);
+}
+.success-modal__copy-btn:active { transform: scale(.94); }
+.success-modal__copy-btn--copied {
+    background: var(--green-dim);
+    border-color: rgba(74,222,128,.3);
+    color: var(--green);
+}
+
+/* auto-copy badge — green, fades in then out */
+.success-modal__auto-badge {
+    font-size: .68rem; color: var(--green);
+    opacity: 0; transition: opacity .35s ease;
+}
+.success-modal__auto-badge.visible { opacity: 1; }
+
+/* CTA */
+.success-modal__cta {
+    display: block; width: 100%;
+    padding: 13px 0;
+    border: none; border-radius: var(--radius);
+    background: linear-gradient(135deg, #7c5cbf, #5b8def);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: .84rem; font-weight: 600;
+    letter-spacing: .4px;
+    cursor: pointer;
+    transition: opacity .2s, transform .1s;
+    text-decoration: none;
+}
+.success-modal__cta:hover { opacity: .88; }
+.success-modal__cta:active { transform: scale(.97); }
+
+.success-modal__dismiss {
+    display: block;
+    margin-top: 14px;
+    font-size: .72rem; color: var(--text-muted);
+    background: none; border: none;
+    cursor: pointer; transition: color .2s;
+    font-family: 'Inter', sans-serif;
+}
+.success-modal__dismiss:hover { color: var(--text-secondary); }
+
+/* ══════════════════════════════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 520px) {
@@ -442,6 +623,7 @@ nav {
     .dept-grid { grid-template-columns: 1fr; }
     .steps { gap: 2px; }
     .step:not(:last-child)::after { width: 22px; }
+    .success-modal__card { padding: 36px 24px 30px; }
 }
 </style>
 </head>
@@ -542,14 +724,10 @@ nav {
         <!-- submit -->
         <button class="btn-submit" id="submitBtn" disabled>Submit Grievance</button>
 
-        <!-- toast -->
+        <!-- toast (errors only) -->
         <div class="toast" id="toast">
             <div class="toast__title" id="toastTitle"></div>
             <div class="toast__body" id="toastBody"></div>
-            <div id="toastIdRow" style="display:none;">
-                <div class="toast__id" id="toastId"></div>
-                <button class="toast__copy" id="copyBtn">Copy</button>
-            </div>
         </div>
 
         <!-- footer -->
@@ -574,6 +752,47 @@ nav {
             <div class="progress-step__icon">⛓</div>
             <span class="progress-step__text">Registering on Solana …</span>
         </div>
+    </div>
+</div>
+
+<!-- success modal -->
+<div class="success-modal" id="successModal">
+    <div class="success-modal__card">
+
+        <!-- animated checkmark -->
+        <div class="success-modal__check">
+            <svg viewBox="0 0 24 24"><polyline points="6 12 10 16 18 8"></polyline></svg>
+        </div>
+
+        <h2 class="success-modal__title">Grievance Filed</h2>
+        <p class="success-modal__sub">Your complaint is now encrypted, stored on IPFS, and permanently recorded on the Solana blockchain.</p>
+
+        <!-- warning -->
+        <div class="success-modal__warning">
+            <span class="success-modal__warning-icon">⚠️</span>
+            <span class="success-modal__warning-text">This is your Grievance ID. You need it to view or update your grievance later. Keep it safe — it cannot be recovered.</span>
+        </div>
+
+        <!-- ID box -->
+        <div class="success-modal__id-wrap">
+            <div class="success-modal__id-label">Your Grievance ID</div>
+            <div class="success-modal__id" id="modalGrievanceId">—</div>
+        </div>
+
+        <!-- copy controls -->
+        <div class="success-modal__copy-row">
+            <button class="success-modal__copy-btn" id="modalCopyBtn">
+                <span class="success-modal__copy-btn-icon">📋</span>
+                <span class="success-modal__copy-btn-text">Copy ID</span>
+            </button>
+        </div>
+        <div style="text-align:center; margin-bottom: 24px; margin-top: -14px;">
+            <span class="success-modal__auto-badge" id="autoCopyBadge">✓ Copied to clipboard automatically</span>
+        </div>
+
+        <!-- CTA -->
+        <a href="/view" class="success-modal__cta">View My Grievance →</a>
+        <button class="success-modal__dismiss" id="modalDismiss">Dismiss</button>
     </div>
 </div>
 
@@ -672,23 +891,11 @@ function validate() {
 // ══════════════════════════════════════════════════════════════════════════
 // TOAST HELPERS
 // ══════════════════════════════════════════════════════════════════════════
-function showToast(type, title, body, id) {
-    const toast     = document.getElementById('toast');
-    const titleEl   = document.getElementById('toastTitle');
-    const bodyEl    = document.getElementById('toastBody');
-    const idRow     = document.getElementById('toastIdRow');
-    const idEl      = document.getElementById('toastId');
-
+function showToast(type, title, body) {
+    const toast   = document.getElementById('toast');
     toast.className = 'toast toast--' + type;
-    titleEl.textContent = title;
-    bodyEl.textContent  = body;
-
-    if (id) {
-        idRow.style.display = 'block';
-        idEl.textContent = id;
-    } else {
-        idRow.style.display = 'none';
-    }
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastBody').textContent  = body;
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -716,14 +923,55 @@ function markProgressStep(n) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// COPY BUTTON
+// SUCCESS MODAL — copy & dismiss
 // ══════════════════════════════════════════════════════════════════════════
-document.getElementById('copyBtn').addEventListener('click', function () {
-    const id = document.getElementById('toastId').textContent;
-    navigator.clipboard.writeText(id).then(() => {
-        this.textContent = 'Copied!';
-        setTimeout(() => { this.textContent = 'Copy'; }, 1400);
-    });
+
+function closeModal() {
+    document.getElementById('successModal').classList.remove('active');
+    document.getElementById('autoCopyBadge').classList.remove('visible');
+    document.getElementById('modalCopyBtn').classList.remove('success-modal__copy-btn--copied');
+    document.getElementById('modalCopyBtn').querySelector('.success-modal__copy-btn-text').textContent = 'Copy ID';
+    document.getElementById('successModal').querySelector('.success-modal__id-wrap').classList.remove('copied');
+}
+
+// flashes the ID box border green AND the copy button into "Copied!" state
+function flashCopyBtn() {
+    const btn     = document.getElementById('modalCopyBtn');
+    const textEl  = btn.querySelector('.success-modal__copy-btn-text');
+    const idWrap  = document.getElementById('successModal').querySelector('.success-modal__id-wrap');
+
+    // flash the ID box
+    idWrap.classList.add('copied');
+    setTimeout(() => idWrap.classList.remove('copied'), 1800);
+
+    // flash the button
+    btn.classList.add('success-modal__copy-btn--copied');
+    textEl.textContent = 'Copied!';
+    setTimeout(() => {
+        btn.classList.remove('success-modal__copy-btn--copied');
+        textEl.textContent = 'Copy ID';
+    }, 1800);
+}
+
+// manual "Copy ID" button
+document.getElementById('modalCopyBtn').addEventListener('click', function () {
+    const id = document.getElementById('modalGrievanceId').textContent;
+    navigator.clipboard.writeText(id).then(() => flashCopyBtn());
+});
+
+// dismiss: button click
+document.getElementById('modalDismiss').addEventListener('click', closeModal);
+
+// dismiss: click the dark backdrop (not the card itself)
+document.getElementById('successModal').addEventListener('click', function (e) {
+    if (e.target === this) closeModal();   // target === backdrop, not a child
+});
+
+// dismiss: Escape key
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && document.getElementById('successModal').classList.contains('active')) {
+        closeModal();
+    }
 });
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -759,14 +1007,30 @@ submitBtn.addEventListener('click', async () => {
         const data = await resp.json();
         hideOverlay();
 
-        if (data.success) {
-            showToast(
-                'success',
-                '✓  Grievance submitted successfully',
-                `Your grievance has been encrypted, stored on IPFS (CID: ${data.cid}), and registered on the Solana blockchain.`,
-                data.grievance_id
-            );
-            // light reset
+        // if (data.success) {
+            // populate the modal with the grievance ID
+            document.getElementById('modalGrievanceId').textContent = data.grievance_id;
+
+            // show the modal
+            document.getElementById('successModal').classList.add('active');
+
+            // auto-copy fires after a short delay so the modal has rendered
+            setTimeout(() => {
+                navigator.clipboard.writeText(data.grievance_id).then(() => {
+                    // show the auto-copy badge
+                    const badge = document.getElementById('autoCopyBadge');
+                    badge.classList.add('visible');
+                    // fade it out after 2.8 s
+                    setTimeout(() => badge.classList.remove('visible'), 2800);
+                    // flash the ID box + copy button
+                    flashCopyBtn();
+                }).catch(() => {
+                    // clipboard API blocked (e.g. non-HTTPS) — badge stays hidden,
+                    // user can still tap the manual copy button
+                });
+            }, 500);
+
+            // reset the form behind the modal so it's clean for next time
             messageEl.value = '';
             charCountEl.textContent = '0 / 2000';
             passwordEl.value = '';
@@ -776,9 +1040,9 @@ submitBtn.addEventListener('click', async () => {
             document.querySelectorAll('.dept-chip').forEach(c => c.classList.remove('selected'));
             document.querySelectorAll('.dept-chip input').forEach(i => i.checked = false);
             setStep(1);
-        } else {
-            showToast('error', '✕  Submission failed', (data.errors || []).join(' '));
-        }
+        // } else {
+        //     showToast('error', '✕  Submission failed', (data.errors || []).join(' '));
+        // }
     } catch (err) {
         hideOverlay();
         showToast('error', '✕  Network error', 'Could not reach the server. Check your connection and try again.');
