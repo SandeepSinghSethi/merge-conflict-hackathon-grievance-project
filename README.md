@@ -3,7 +3,7 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
 **GrievancePortal** is a decentralized grievance redressal platform that allows users to submit complaints securely and transparently without relying on blind trust in centralized systems.
 
@@ -16,7 +16,7 @@ This ensures **data integrity, tamper resistance, privacy, and public verifiabil
 
 ---
 
-## ❓ What Problem Does This Solve?
+## What Problem Does This Solve?
 
 Traditional grievance systems suffer from:
 - Lack of transparency
@@ -33,7 +33,7 @@ This project solves these by ensuring:
 
 ---
 
-## 🧠 Why This Didn’t Exist Before
+## Why This Didn’t Exist Before
 
 - Government systems are largely centralized and opaque
 - Blockchain adoption in civic tech is still early
@@ -44,7 +44,7 @@ This project explores a **new application of decentralization for civic infrastr
 
 ---
 
-## 🧩 System Architecture (High Level)
+## System Architecture (High Level)
 
 1. User writes a grievance in the browser
 2. Grievance is **encrypted in-transit**
@@ -55,7 +55,7 @@ This project explores a **new application of decentralization for civic infrastr
 
 ---
 
-## 📂 Program Structure
+## Program Structure
 
 ```text
 .
@@ -71,10 +71,10 @@ This project explores a **new application of decentralization for civic infrastr
 ├── LICENSE
 └── README.md
 
-
+```
 ---
 
-## 🔐 What Data Is Stored Where?
+## What Data Is Stored Where?
 
 ### On IPFS (Encrypted JSON)
 - Grievance message
@@ -91,23 +91,23 @@ This project explores a **new application of decentralization for civic infrastr
 - Timestamp
 - Status updates (Pending / InProgress / Resolved / Rejected)
 
-> ⚠️ No sensitive grievance content is stored directly on-chain.
+> No sensitive grievance content is stored directly on-chain.
 
 ---
 
-## 🖼️ Screenshots
+## Screenshots
 
-### 1️⃣ Grievance Submission Interface
+### Grievance Submission Interface
 <!-- Add Screenshot Here -->
 ![Grievance Submission](./images/submission.png)
 
-### 2️⃣ Grievance Retrieval Interface
+### Grievance Retrieval Interface
 <!-- Add Screenshot Here -->
 ![Grievance Retrieval](./images/retrieval.png)
 
 ---
 
-## 🧪 Is This a Proof of Concept?
+## Is This a Proof of Concept?
 
 Yes.  
 This project is a **proof-of-work MVP** demonstrating:
@@ -120,7 +120,7 @@ It is intentionally minimal to validate feasibility within a hackathon timeframe
 
 ---
 
-## 🚀 What Makes This Unique?
+## What Makes This Unique?
 
 - First-of-its-kind **decentralized grievance anchoring system**
 - Combines **encryption + IPFS + blockchain** meaningfully
@@ -130,7 +130,7 @@ It is intentionally minimal to validate feasibility within a hackathon timeframe
 
 ---
 
-## 🛠️ Challenges Faced
+## Challenges Faced
 
 - Steep learning curve for IPFS & Solana
 - Writing a secure smart contract on Devnet
@@ -140,7 +140,7 @@ It is intentionally minimal to validate feasibility within a hackathon timeframe
 
 ---
 
-## 🔮 Future Work
+## Future Work
 
 - Replace symmetric encryption with **asymmetric encryption**
 - Role-based admin dashboard for departments
@@ -151,12 +151,12 @@ It is intentionally minimal to validate feasibility within a hackathon timeframe
 
 ---
 
-## 🏁 Conclusion
+## Conclusion
 
 GrievancePortal explores how **trust, transparency, and accountability** can be rebuilt using decentralized technologies.  
 It is not meant to replace existing systems overnight—but to **prove that a better, verifiable alternative is possible**.
 
 ---
 
-## 📜 License
+## License
 Apache License
