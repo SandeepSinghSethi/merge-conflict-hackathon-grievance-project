@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>View Grievance — Grievance Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   TOKENS & RESET (identical to index.html for consistency)
+   ══════════════════════════════════════════════════════════════════════════ */
+:root {
+    --bg-base:       #0a0c10;
+    --bg-surface:    #111418;
+    --bg-elevated:   #181d26;
+    --bg-hover:      #1e2430;
+
+    --border:        rgba(255,255,255,0.06);
+    --border-focus:  rgba(178,160,255,0.45);
+
+    --text-primary:  #eef0f4;
+    --text-secondary:#8a909e;
+    --text-muted:    #545b6b;
+
+    --accent:        #b2a0ff;
+    --accent-dim:    rgba(178,160,255,0.15);
+    --accent-glow:   rgba(178,160,255,0.35);
+
+    --green:         #4ade80;
+    --green-dim:     rgba(74,222,128,0.12);
+    --red:           #f87171;
+    --red-dim:       rgba(248,113,113,0.12);
+    --amber:         #fbbf24;
+
+    --radius:        12px;
+    --radius-lg:     18px;
+    --radius-sm:     8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AMBIENT BACKGROUND
+   ══════════════════════════════════════════════════════════════════════════ */
+.bg-orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; opacity: .18; }
+.bg-orb--1 { width: 440px; height: 440px; background: #2e4a8f; top: -140px; right: -120px; }
+.bg-orb--2 { width: 380px; height: 380px; background: #7c5cbf; bottom: -100px; left: -100px; }
+.bg-orb--3 { width: 260px; height: 260px; background: #3a5f8f; top: 45%; left: 55%; transform: translate(-50%,-50%); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NAV
+   ══════════════════════════════════════════════════════════════════════════ */
+nav {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 40px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,12,16,.7);
+    backdrop-filter: blur(14px);
+}
+.nav-brand { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 600; color: var(--text-primary); letter-spacing: -.5px; text-decoration: none; }
+.nav-brand span { color: var(--accent); }
+.nav-links { display: flex; gap: 8px; }
+.nav-links a { color: var(--text-secondary); text-decoration: none; font-size: .82rem; font-weight: 500; padding: 7px 16px; border-radius: var(--radius-sm); transition: all .2s; letter-spacing: .3px; text-transform: uppercase; }
+.nav-links a:hover { background: var(--bg-elevated); color: var(--text-primary); }
+.nav-links a.active { background: var(--accent-dim); color: var(--accent); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HERO
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero { position: relative; z-index: 2; text-align: center; padding: 72px 24px 48px; }
+.hero__tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim); color: var(--accent);
+    font-size: .72rem; font-weight: 500;
+    padding: 5px 14px; border-radius: 100px;
+    letter-spacing: .8px; text-transform: uppercase; margin-bottom: 22px;
+}
+.hero__tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.hero__title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:700; line-height:1.15; color:var(--text-primary); max-width:620px; margin:0 auto 14px; }
+.hero__title em { font-style:italic; color:var(--accent); }
+.hero__sub { color:var(--text-secondary); font-size:.9rem; font-weight:300; max-width:480px; margin:0 auto; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MAIN CARD
+   ══════════════════════════════════════════════════════════════════════════ */
+.main-card { position:relative; z-index:2; max-width:600px; margin:0 auto; padding:0 24px 80px; }
+.card { background:var(--bg-surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:38px 36px 34px; backdrop-filter:blur(6px); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FORM
+   ══════════════════════════════════════════════════════════════════════════ */
+.field { margin-bottom: 22px; }
+.field__label { display:block; font-size:.72rem; font-weight:500; text-transform:uppercase; letter-spacing:.7px; color:var(--text-secondary); margin-bottom:8px; }
+.field__label .req { color:var(--accent); margin-left:2px; }
+
+.field input {
+    width:100%; background:var(--bg-elevated); border:1.5px solid var(--border); border-radius:var(--radius);
+    color:var(--text-primary); font-family:'Inter',sans-serif; font-size:.88rem;
+    padding:13px 16px; height:46px; outline:none; transition:border-color .2s, box-shadow .2s;
+}
+.field input:focus { border-color:var(--border-focus); box-shadow:0 0 0 3px var(--accent-glow); }
+.field input::placeholder { color:var(--text-muted); }
+
+/* monospace for grievance ID */
+#grievanceId { font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:.2px; }
+
+.field__hint { font-size:.7rem; color:var(--text-muted); margin-top:6px; display:block; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BUTTON
+   ══════════════════════════════════════════════════════════════════════════ */
+.btn-view {
+    width:100%; padding:14px 0; border:none; border-radius:var(--radius);
+    background:linear-gradient(135deg,#5b8def,#7c5cbf);
+    color:#fff; font-family:'Inter',sans-serif; font-size:.84rem; font-weight:600;
+    letter-spacing:.5px; cursor:pointer;
+    transition:opacity .2s, transform .1s, box-shadow .2s;
+    position:relative; overflow:hidden; margin-top:4px;
+}
+.btn-view:hover { opacity:.88; box-shadow:0 4px 24px rgba(93,139,239,.3); }
+.btn-view:active { transform:scale(.985); }
+.btn-view:disabled { opacity:.4; cursor:not-allowed; }
+.btn-view::after { content:''; position:absolute; top:0; left:-100%; width:60%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent); transition:left .5s; }
+.btn-view:hover::after { left:140%; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TOAST
+   ══════════════════════════════════════════════════════════════════════════ */
+.toast { display:none; border-radius:var(--radius); padding:16px 20px; margin-top:22px; font-size:.82rem; line-height:1.5; animation:slideDown .3s ease; }
+@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+.toast--error { display:block; background:var(--red-dim); border:1px solid rgba(248,113,113,.25); color:var(--red); }
+.toast--info  { display:block; background:var(--accent-dim); border:1px solid rgba(178,160,255,.2); color:var(--accent); }
+.toast__title { font-weight:600; margin-bottom:4px; }
+.toast__body  { font-weight:300; opacity:.85; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RESULT CARD  (shown after successful decrypt)
+   ══════════════════════════════════════════════════════════════════════════ */
+.result { display:none; margin-top:28px; animation:slideDown .35s ease; }
+.result.visible { display:block; }
+
+.result__header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding-bottom:14px; border-bottom:1px solid var(--border); margin-bottom:20px;
+}
+.result__header-left { display:flex; align-items:center; gap:10px; }
+.result__badge {
+    display:inline-flex; align-items:center; gap:5px;
+    background:var(--green-dim); color:var(--green);
+    font-size:.68rem; font-weight:600; letter-spacing:.5px; text-transform:uppercase;
+    padding:4px 10px; border-radius:100px;
+}
+.result__badge::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--green); }
+.result__title { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:600; }
+
+/* dept tag */
+.dept-tag {
+    display:inline-block;
+    background:var(--accent-dim); color:var(--accent);
+    font-size:.7rem; font-weight:500; letter-spacing:.4px; text-transform:uppercase;
+    padding:3px 10px; border-radius:100px;
+}
+
+/* rows */
+.result__row {
+    display:flex; flex-direction:column; gap:4px;
+    padding:14px 0; border-bottom:1px solid var(--border);
+}
+.result__row:last-child { border-bottom:none; }
+.result__row-label { font-size:.68rem; font-weight:500; text-transform:uppercase; letter-spacing:.6px; color:var(--text-muted); }
+.result__row-value { font-size:.88rem; color:var(--text-primary); font-weight:400; line-height:1.55; }
+.result__row-value.mono { font-family:'JetBrains Mono',monospace; font-size:.76rem; word-break:break-all; color:var(--text-secondary); }
+
+/* on-chain section */
+.result__chain {
+    margin-top:18px;
+    background:var(--bg-elevated);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 18px;
+}
+.result__chain-title {
+    font-size:.68rem; font-weight:600; text-transform:uppercase; letter-spacing:.6px;
+    color:var(--text-muted); margin-bottom:10px;
+    display:flex; align-items:center; gap:6px;
+}
+.result__chain-title::before { content:'⛓'; }
+.result__chain-row { display:flex; justify-content:space-between; align-items:baseline; padding:5px 0; }
+.result__chain-row + .result__chain-row { border-top:1px solid var(--border); }
+.result__chain-label { font-size:.7rem; color:var(--text-muted); }
+.result__chain-value { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--text-secondary); word-break:break-all; max-width:62%; text-align:right; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CARD FOOTER
+   ══════════════════════════════════════════════════════════════════════════ */
+.card-footer { text-align:center; margin-top:28px; font-size:.75rem; color:var(--text-muted); }
+.card-footer a { color:var(--accent); text-decoration:none; }
+.card-footer a:hover { text-decoration:underline; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LOADING SPINNER (inline)
+   ══════════════════════════════════════════════════════════════════════════ */
+.spinner { display:inline-block; width:16px; height:16px; border-radius:50%; border:2px solid var(--accent-glow); border-top-color:var(--accent); animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width:520px) {
+    nav { padding:18px 20px; }
+    .card { padding:28px 22px 26px; }
+    .result__chain-row { flex-direction:column; gap:2px; }
+    .result__chain-value { max-width:100%; text-align:left; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-orb bg-orb--1"></div>
+<div class="bg-orb bg-orb--2"></div>
+<div class="bg-orb bg-orb--3"></div>
+
+<nav>
+    <a href="/" class="nav-brand">Grievance<span>Portal</span></a>
+    <div class="nav-links">
+        <a href="/">Submit</a>
+        <a href="/view" class="active">View</a>
+    </div>
+</nav>
+
+<header class="hero">
+    <div class="hero__tag">Decrypt &amp; Verify</div>
+    <h1 class="hero__title">Retrieve your<br><em>grievance</em></h1>
+    <p class="hero__sub">Enter your Grievance ID and the password you used during submission to decrypt and view your complaint.</p>
+</header>
+
+<div class="main-card">
+    <div class="card">
+
+        <!-- Grievance ID -->
+        <div class="field">
+            <label class="field__label" for="grievanceId">Grievance ID <span class="req">*</span></label>
+            <input type="text" id="grievanceId" placeholder="Paste your Solana grievance pubkey …" autocomplete="off" spellcheck="false" />
+            <span class="field__hint">This is the ID you received when you submitted your grievance.</span>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+            <label class="field__label" for="password">Decryption Password <span class="req">*</span></label>
+            <input type="password" id="password" placeholder="Enter your submission password" autocomplete="off" />
+            <span class="field__hint">This must match the password you used when filing the grievance.</span>
+        </div>
+
+        <!-- Button -->
+        <button class="btn-view" id="viewBtn" disabled>Decrypt &amp; View</button>
+
+        <!-- Toast (errors) -->
+        <div class="toast" id="toast">
+            <div class="toast__title" id="toastTitle"></div>
+            <div class="toast__body"  id="toastBody"></div>
+        </div>
+
+        <!-- Result card -->
+        <div class="result" id="resultCard">
+            <div class="result__header">
+                <div class="result__header-left">
+                    <span class="result__badge">Verified</span>
+                    <span class="result__title">Grievance Details</span>
+                </div>
+                <span class="dept-tag" id="resDept"></span>
+            </div>
+
+            <div class="result__row">
+                <span class="result__row-label">Message</span>
+                <span class="result__row-value" id="resMessage"></span>
+            </div>
+            <div class="result__row">
+                <span class="result__row-label">Department</span>
+                <span class="result__row-value" id="resDepartment"></span>
+            </div>
+            <div class="result__row">
+                <span class="result__row-label">Submitted At</span>
+                <span class="result__row-value" id="resSubmittedAt"></span>
+            </div>
+            <div class="result__row">
+                <span class="result__row-label">IPFS CID</span>
+                <span class="result__row-value mono" id="resCid"></span>
+            </div>
+
+            <!-- On-chain info -->
+            <div class="result__chain">
+                <div class="result__chain-title">On-chain Verification</div>
+                <div class="result__chain-row">
+                    <span class="result__chain-label">Grievance PDA</span>
+                    <span class="result__chain-value" id="resGrievancePda"></span>
+                </div>
+                <div class="result__chain-row">
+                    <span class="result__chain-label">Created By (wallet)</span>
+                    <span class="result__chain-value" id="resCreatedBy"></span>
+                </div>
+                <div class="result__chain-row">
+                    <span class="result__chain-label">On-chain Timestamp</span>
+                    <span class="result__chain-value" id="resChainTimestamp"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            Want to file a new one? <a href="/">Submit a grievance →</a>
+        </div>
+    </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════
+// VALIDATION
+// ══════════════════════════════════════════════════════════════════════════
+const gidEl  = document.getElementById('grievanceId');
+const pwdEl  = document.getElementById('password');
+const viewBtn = document.getElementById('viewBtn');
+
+function validate() {
+    viewBtn.disabled = !(gidEl.value.trim().length > 0 && pwdEl.value.length > 0);
+}
+gidEl.addEventListener('input', validate);
+pwdEl.addEventListener('input', validate);
+
+// ══════════════════════════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════════════════════════
+function showToast(type, title, body) {
+    const toast   = document.getElementById('toast');
+    toast.className = 'toast toast--' + type;
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastBody').textContent  = body;
+}
+function hideToast() {
+    document.getElementById('toast').className = 'toast';
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// RESULT CARD
+// ══════════════════════════════════════════════════════════════════════════
+function showResult(data) {
+    document.getElementById('resMessage').textContent      = data.message;
+    document.getElementById('resDepartment').textContent   = data.department;
+    document.getElementById('resDept').textContent         = data.department;
+    document.getElementById('resCid').textContent          = data.cid;
+    document.getElementById('resGrievancePda').textContent = data.grievance_id;
+    document.getElementById('resCreatedBy').textContent    = data.created_by || '—';
+
+    // Format submitted_at nicely
+    let subAt = data.submitted_at || '—';
+    try { subAt = new Date(data.submitted_at).toLocaleString(); } catch(e) {}
+    document.getElementById('resSubmittedAt').textContent = subAt;
+
+    // On-chain timestamp (unix or already a number)
+    let chainTs = '—';
+    if (data.on_chain && data.on_chain.created_at) {
+        try {
+            // Solana stores as unix seconds
+            chainTs = new Date(Number(data.on_chain.created_at) * 1000).toLocaleString();
+        } catch(e) { chainTs = String(data.on_chain.created_at); }
+    }
+    document.getElementById('resChainTimestamp').textContent = chainTs;
+
+    document.getElementById('resultCard').classList.add('visible');
+}
+function hideResult() {
+    document.getElementById('resultCard').classList.remove('visible');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// VIEW / DECRYPT
+// ══════════════════════════════════════════════════════════════════════════
+viewBtn.addEventListener('click', async () => {
+    const grievanceId = gidEl.value.trim();
+    const password    = pwdEl.value;
+
+    hideToast();
+    hideResult();
+    viewBtn.disabled = true;
+    viewBtn.innerHTML = '<span class="spinner"></span> Decrypting …';
+
+    try {
+        const resp = await fetch('/api/view', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ grievance_id: grievanceId, password }),
+        });
+
+        const data = await resp.json();
+
+        if (data.success) {
+            showResult(data);
+        } else {
+            const msg = (data.errors || []).join(' ');
+            if (resp.status === 401) {
+                showToast('error', '✕  Decryption failed', msg);
+            } else if (resp.status === 404) {
+                showToast('error', '✕  Not found', msg);
+            } else {
+                showToast('error', '✕  Error', msg);
+            }
+        }
+    } catch (err) {
+        showToast('error', '✕  Network error', 'Could not reach the server. Check your connection and try again.');
+    }
+
+    viewBtn.disabled = false;
+    viewBtn.innerHTML = 'Decrypt &amp; View';
+    validate();
+});
+</script>
+</body>
+</html>

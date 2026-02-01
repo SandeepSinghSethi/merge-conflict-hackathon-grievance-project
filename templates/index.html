@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Submit Grievance — Grievance Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   TOKENS & RESET
+   ══════════════════════════════════════════════════════════════════════════ */
+:root {
+    --bg-base:       #0a0c10;
+    --bg-surface:    #111418;
+    --bg-elevated:   #181d26;
+    --bg-hover:      #1e2430;
+
+    --border:        rgba(255,255,255,0.06);
+    --border-focus:  rgba(178,160,255,0.45);
+
+    --text-primary:  #eef0f4;
+    --text-secondary:#8a909e;
+    --text-muted:    #545b6b;
+
+    --accent:        #b2a0ff;
+    --accent-dim:    rgba(178,160,255,0.15);
+    --accent-glow:   rgba(178,160,255,0.35);
+
+    --green:         #4ade80;
+    --green-dim:     rgba(74,222,128,0.12);
+    --red:           #f87171;
+    --red-dim:       rgba(248,113,113,0.12);
+    --amber:         #fbbf24;
+
+    --radius:        12px;
+    --radius-lg:     18px;
+    --radius-sm:     8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AMBIENT BACKGROUND — subtle radial orbs
+   ══════════════════════════════════════════════════════════════════════════ */
+.bg-orb {
+    position: fixed; border-radius: 50%; filter: blur(120px);
+    pointer-events: none; z-index: 0; opacity: .18;
+}
+.bg-orb--1 { width: 520px; height: 520px; background: #7c5cbf; top: -180px; left: -140px; }
+.bg-orb--2 { width: 420px; height: 420px; background: #2e4a8f; bottom: -120px; right: -100px; }
+.bg-orb--3 { width: 300px; height: 300px; background: #4a3080; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NAV
+   ══════════════════════════════════════════════════════════════════════════ */
+nav {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 40px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,12,16,.7);
+    backdrop-filter: blur(14px);
+}
+.nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -.5px;
+    text-decoration: none;
+}
+.nav-brand span { color: var(--accent); }
+.nav-links { display: flex; gap: 8px; }
+.nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: .82rem; font-weight: 500;
+    padding: 7px 16px; border-radius: var(--radius-sm);
+    transition: all .2s;
+    letter-spacing: .3px; text-transform: uppercase;
+}
+.nav-links a:hover { background: var(--bg-elevated); color: var(--text-primary); }
+.nav-links a.active { background: var(--accent-dim); color: var(--accent); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   HERO HEADER
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero {
+    position: relative; z-index: 2;
+    text-align: center;
+    padding: 72px 24px 48px;
+}
+.hero__tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-size: .72rem; font-weight: 500;
+    padding: 5px 14px; border-radius: 100px;
+    letter-spacing: .8px; text-transform: uppercase;
+    margin-bottom: 22px;
+}
+.hero__tag::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%,100%{ opacity:1; } 50%{ opacity:.35; }
+}
+.hero__title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text-primary);
+    max-width: 620px; margin: 0 auto 14px;
+}
+.hero__title em { font-style: italic; color: var(--accent); }
+.hero__sub {
+    color: var(--text-secondary);
+    font-size: .9rem; font-weight: 300;
+    max-width: 480px; margin: 0 auto;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MAIN CARD
+   ══════════════════════════════════════════════════════════════════════════ */
+.main-card {
+    position: relative; z-index: 2;
+    max-width: 600px; margin: 0 auto;
+    padding: 0 24px 80px;
+}
+.card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 38px 36px 34px;
+    backdrop-filter: blur(6px);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   STEP INDICATOR
+   ══════════════════════════════════════════════════════════════════════════ */
+.steps {
+    display: flex; justify-content: center; gap: 0;
+    margin-bottom: 36px;
+}
+.step {
+    display: flex; align-items: center; gap: 10px;
+    position: relative;
+}
+.step:not(:last-child)::after {
+    content: ''; width: 48px; height: 1px;
+    background: var(--border);
+    position: absolute; left: calc(100% + 5px); top: 50%;
+}
+.step__dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--bg-elevated); border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem; font-weight: 600; color: var(--text-muted);
+    transition: all .3s;
+}
+.step--active .step__dot {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    color: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+.step--done .step__dot {
+    border-color: var(--green);
+    background: var(--green-dim);
+    color: var(--green);
+}
+.step__label {
+    font-size: .68rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: .6px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+.step--active .step__label { color: var(--accent); }
+.step--done .step__label { color: var(--green); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FORM FIELDS
+   ══════════════════════════════════════════════════════════════════════════ */
+.field { margin-bottom: 24px; }
+.field__label {
+    display: block;
+    font-size: .72rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: .7px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+.field__label .req { color: var(--accent); margin-left: 2px; }
+
+/* --- Department selector --- */
+.dept-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+.dept-chip {
+    position: relative;
+    background: var(--bg-elevated);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px 12px 42px;
+    cursor: pointer;
+    transition: all .2s;
+    user-select: none;
+}
+.dept-chip:hover {
+    border-color: rgba(178,160,255,.25);
+    background: var(--bg-hover);
+}
+.dept-chip input[type="radio"] {
+    position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+.dept-chip.selected {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.dept-chip__name {
+    font-size: .82rem; font-weight: 500;
+    color: var(--text-primary);
+}
+.dept-chip__icon {
+    position: absolute; left: 38px; top: 50%; transform: translateY(-50%);
+    font-size: .78rem; opacity: .7;
+}
+
+/* --- Textarea --- */
+.field textarea,
+.field input[type="password"] {
+    width: 100%;
+    background: var(--bg-elevated);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: .88rem;
+    padding: 13px 16px;
+    resize: vertical;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+    min-height: 110px;
+}
+.field input[type="password"] { min-height: auto; height: 46px; }
+.field textarea:focus,
+.field input[type="password"]:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.field textarea::placeholder,
+.field input[type="password"]::placeholder {
+    color: var(--text-muted);
+}
+
+/* char counter */
+.field__meta {
+    display: flex; justify-content: space-between;
+    margin-top: 6px;
+}
+.field__hint { font-size: .7rem; color: var(--text-muted); }
+
+/* password strength bar */
+.strength-bar {
+    height: 3px; border-radius: 2px;
+    background: var(--bg-elevated);
+    margin-top: 8px; overflow: hidden;
+}
+.strength-bar__fill {
+    height: 100%; width: 0%; border-radius: 2px;
+    transition: width .3s, background .3s;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SUBMIT BUTTON
+   ══════════════════════════════════════════════════════════════════════════ */
+.btn-submit {
+    width: 100%;
+    padding: 14px 0;
+    border: none; border-radius: var(--radius);
+    background: linear-gradient(135deg, #7c5cbf, #5b8def);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: .84rem; font-weight: 600;
+    letter-spacing: .5px;
+    cursor: pointer;
+    transition: opacity .2s, transform .1s, box-shadow .2s;
+    position: relative; overflow: hidden;
+    margin-top: 8px;
+}
+.btn-submit:hover { opacity: .88; box-shadow: 0 4px 24px rgba(93,139,239,.3); }
+.btn-submit:active { transform: scale(.985); }
+.btn-submit:disabled { opacity: .4; cursor: not-allowed; }
+
+/* shimmer on hover */
+.btn-submit::after {
+    content: '';
+    position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+    transition: left .5s;
+}
+.btn-submit:hover::after { left: 140%; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TOAST / STATUS
+   ══════════════════════════════════════════════════════════════════════════ */
+.toast {
+    display: none;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 22px;
+    font-size: .82rem;
+    line-height: 1.5;
+    animation: slideDown .3s ease;
+}
+@keyframes slideDown {
+    from { opacity:0; transform: translateY(-8px); }
+    to   { opacity:1; transform: translateY(0); }
+}
+.toast--success {
+    display: block;
+    background: var(--green-dim);
+    border: 1px solid rgba(74,222,128,.25);
+    color: var(--green);
+}
+.toast--error {
+    display: block;
+    background: var(--red-dim);
+    border: 1px solid rgba(248,113,113,.25);
+    color: var(--red);
+}
+.toast--info {
+    display: block;
+    background: var(--accent-dim);
+    border: 1px solid rgba(178,160,255,.2);
+    color: var(--accent);
+}
+.toast__title { font-weight: 600; margin-bottom: 4px; }
+.toast__body { font-weight: 300; opacity: .85; }
+.toast__id {
+    display: inline-block; margin-top: 10px;
+    background: rgba(0,0,0,.25);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem; word-break: break-all;
+    color: inherit; opacity: .9;
+}
+.toast__copy {
+    display: inline-block; margin-left: 8px;
+    font-size: .68rem; cursor: pointer;
+    opacity: .6; transition: opacity .2s;
+    font-family: 'Inter', sans-serif;
+    background: none; border: none; color: inherit;
+    vertical-align: middle; padding: 2px 6px;
+    border-radius: 4px;
+}
+.toast__copy:hover { opacity: 1; background: rgba(255,255,255,.08); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PROGRESS OVERLAY (during submission)
+   ══════════════════════════════════════════════════════════════════════════ */
+.progress-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(10,12,16,.88);
+    z-index: 100;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px;
+    backdrop-filter: blur(4px);
+}
+.progress-overlay.active { display: flex; }
+.progress-steps { display: flex; flex-direction: column; gap: 14px; }
+.progress-step {
+    display: flex; align-items: center; gap: 14px;
+    opacity: .25; transition: opacity .4s;
+}
+.progress-step.active { opacity: 1; }
+.progress-step.done { opacity: .6; }
+.progress-step__icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--bg-elevated); border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; transition: all .3s;
+}
+.progress-step.active .progress-step__icon {
+    border-color: var(--accent); background: var(--accent-dim);
+    box-shadow: 0 0 16px var(--accent-glow);
+}
+.progress-step.done .progress-step__icon {
+    border-color: var(--green); background: var(--green-dim);
+}
+.progress-step__text { font-size: .82rem; color: var(--text-secondary); }
+.progress-step.active .progress-step__text { color: var(--text-primary); font-weight: 500; }
+
+/* spinner for active step */
+.spinner {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid var(--accent-glow);
+    border-top-color: var(--accent);
+    animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FOOTER LINK
+   ══════════════════════════════════════════════════════════════════════════ */
+.card-footer {
+    text-align: center; margin-top: 28px;
+    font-size: .75rem; color: var(--text-muted);
+}
+.card-footer a { color: var(--accent); text-decoration: none; }
+.card-footer a:hover { text-decoration: underline; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 520px) {
+    nav { padding: 18px 20px; }
+    .card { padding: 28px 22px 26px; }
+    .dept-grid { grid-template-columns: 1fr; }
+    .steps { gap: 2px; }
+    .step:not(:last-child)::after { width: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ambient orbs -->
+<div class="bg-orb bg-orb--1"></div>
+<div class="bg-orb bg-orb--2"></div>
+<div class="bg-orb bg-orb--3"></div>
+
+<!-- nav -->
+<nav>
+    <a href="/" class="nav-brand">Grievance<span>Portal</span></a>
+    <div class="nav-links">
+        <a href="/" class="active">Submit</a>
+        <a href="/view">View</a>
+    </div>
+</nav>
+
+<!-- hero -->
+<header class="hero">
+    <div class="hero__tag">Secure &amp; Transparent</div>
+    <h1 class="hero__title">File your grievance<br><em>with confidence</em></h1>
+    <p class="hero__sub">Your complaint is encrypted client-side, stored on IPFS, and anchored immutably on the Solana blockchain.</p>
+</header>
+
+<!-- main card -->
+<div class="main-card">
+    <div class="card">
+
+        <!-- step indicator -->
+        <div class="steps" id="stepIndicator">
+            <div class="step step--active" data-step="1">
+                <div class="step__dot">1</div>
+                <span class="step__label">Details</span>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step__dot">2</div>
+                <span class="step__label">Security</span>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step__dot">3</div>
+                <span class="step__label">Submit</span>
+            </div>
+        </div>
+
+        <!-- department -->
+        <div class="field">
+            <label class="field__label">Department <span class="req">*</span></label>
+            <div class="dept-grid" id="deptGrid">
+                <label class="dept-chip" data-value="Public Works">
+                    <input type="radio" name="department" value="Public Works" />
+                    <span class="dept-chip__name">Public Works</span>
+                </label>
+                <label class="dept-chip" data-value="Healthcare">
+                    <input type="radio" name="department" value="Healthcare" />
+                    <span class="dept-chip__name">Healthcare</span>
+                </label>
+                <label class="dept-chip" data-value="Education">
+                    <input type="radio" name="department" value="Education" />
+                    <span class="dept-chip__name">Education</span>
+                </label>
+                <label class="dept-chip" data-value="Environment">
+                    <input type="radio" name="department" value="Environment" />
+                    <span class="dept-chip__name">Environment</span>
+                </label>
+                <label class="dept-chip" data-value="Law &amp; Order">
+                    <input type="radio" name="department" value="Law &amp; Order" />
+                    <span class="dept-chip__name">Law &amp; Order</span>
+                </label>
+                <label class="dept-chip" data-value="Revenue">
+                    <input type="radio" name="department" value="Revenue" />
+                    <span class="dept-chip__name">Revenue</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- message -->
+        <div class="field">
+            <label class="field__label" for="message">Grievance Message <span class="req">*</span></label>
+            <textarea id="message" placeholder="Describe the issue clearly …" maxlength="2000"></textarea>
+            <div class="field__meta">
+                <span class="field__hint">Be specific — include location, dates, or reference numbers if available.</span>
+                <span class="field__hint" id="charCount">0 / 2000</span>
+            </div>
+        </div>
+
+        <!-- password -->
+        <div class="field">
+            <label class="field__label" for="password">Encryption Password <span class="req">*</span></label>
+            <input type="password" id="password" placeholder="Min 6 characters" autocomplete="off" />
+            <div class="strength-bar"><div class="strength-bar__fill" id="strengthFill"></div></div>
+            <div class="field__meta">
+                <span class="field__hint" id="strengthLabel">Use this password to decrypt your grievance later.</span>
+            </div>
+        </div>
+
+        <!-- submit -->
+        <button class="btn-submit" id="submitBtn" disabled>Submit Grievance</button>
+
+        <!-- toast -->
+        <div class="toast" id="toast">
+            <div class="toast__title" id="toastTitle"></div>
+            <div class="toast__body" id="toastBody"></div>
+            <div id="toastIdRow" style="display:none;">
+                <div class="toast__id" id="toastId"></div>
+                <button class="toast__copy" id="copyBtn">Copy</button>
+            </div>
+        </div>
+
+        <!-- footer -->
+        <div class="card-footer">
+            Already filed? <a href="/view">View your grievance →</a>
+        </div>
+    </div>
+</div>
+
+<!-- progress overlay -->
+<div class="progress-overlay" id="progressOverlay">
+    <div class="progress-steps">
+        <div class="progress-step active" id="pStep1">
+            <div class="progress-step__icon"><span class="spinner"></span></div>
+            <span class="progress-step__text">Encrypting payload …</span>
+        </div>
+        <div class="progress-step" id="pStep2">
+            <div class="progress-step__icon">☁</div>
+            <span class="progress-step__text">Uploading to IPFS …</span>
+        </div>
+        <div class="progress-step" id="pStep3">
+            <div class="progress-step__icon">⛓</div>
+            <span class="progress-step__text">Registering on Solana …</span>
+        </div>
+    </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════
+// DEPARTMENT CHIPS
+// ══════════════════════════════════════════════════════════════════════════
+document.querySelectorAll('.dept-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        document.querySelectorAll('.dept-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        chip.querySelector('input').checked = true;
+        validate();
+    });
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// CHAR COUNTER
+// ══════════════════════════════════════════════════════════════════════════
+const messageEl = document.getElementById('message');
+const charCountEl = document.getElementById('charCount');
+messageEl.addEventListener('input', () => {
+    charCountEl.textContent = `${messageEl.value.length} / 2000`;
+    validate();
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// PASSWORD STRENGTH
+// ══════════════════════════════════════════════════════════════════════════
+const passwordEl = document.getElementById('password');
+const strengthFill = document.getElementById('strengthFill');
+const strengthLabel = document.getElementById('strengthLabel');
+
+function scorePassword(p) {
+    let s = 0;
+    if (p.length >= 6)  s++;
+    if (p.length >= 10) s++;
+    if (/[A-Z]/.test(p) && /[a-z]/.test(p)) s++;
+    if (/[0-9]/.test(p)) s++;
+    if (/[^A-Za-z0-9]/.test(p)) s++;
+    return s; // 0-5
+}
+
+const STRENGTH_MAP = [
+    { label: 'Too short',  color: 'var(--text-muted)',  w: '0%'  },
+    { label: 'Weak',       color: 'var(--red)',         w: '20%' },
+    { label: 'Fair',       color: 'var(--amber)',       w: '45%' },
+    { label: 'Good',       color: 'var(--amber)',       w: '65%' },
+    { label: 'Strong',     color: 'var(--green)',       w: '85%' },
+    { label: 'Very strong',color: 'var(--green)',       w: '100%'},
+];
+
+passwordEl.addEventListener('input', () => {
+    const score = scorePassword(passwordEl.value);
+    const s = STRENGTH_MAP[score];
+    strengthFill.style.width = s.w;
+    strengthFill.style.background = s.color;
+    strengthLabel.textContent = s.label;
+    validate();
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// STEP INDICATOR UPDATES  (purely cosmetic; real gating is server-side)
+// ══════════════════════════════════════════════════════════════════════════
+function setStep(n) {
+    document.querySelectorAll('.step').forEach((el, i) => {
+        el.classList.remove('step--active', 'step--done');
+        if (i + 1 < n)  el.classList.add('step--done');
+        if (i + 1 === n) el.classList.add('step--active');
+    });
+}
+
+// auto-advance step based on filled fields
+function updateSteps() {
+    const hasDept = !!document.querySelector('.dept-chip.selected');
+    const hasMsg  = messageEl.value.trim().length > 0;
+    const hasPwd  = passwordEl.value.length >= 6;
+    if (hasDept && hasMsg && hasPwd) setStep(3);
+    else if (hasDept && hasMsg) setStep(2);
+    else setStep(1);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// VALIDATION & SUBMIT BUTTON
+// ══════════════════════════════════════════════════════════════════════════
+const submitBtn = document.getElementById('submitBtn');
+
+function validate() {
+    const hasDept = !!document.querySelector('.dept-chip.selected');
+    const hasMsg  = messageEl.value.trim().length > 0;
+    const hasPwd  = passwordEl.value.length >= 6;
+    submitBtn.disabled = !(hasDept && hasMsg && hasPwd);
+    updateSteps();
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// TOAST HELPERS
+// ══════════════════════════════════════════════════════════════════════════
+function showToast(type, title, body, id) {
+    const toast     = document.getElementById('toast');
+    const titleEl   = document.getElementById('toastTitle');
+    const bodyEl    = document.getElementById('toastBody');
+    const idRow     = document.getElementById('toastIdRow');
+    const idEl      = document.getElementById('toastId');
+
+    toast.className = 'toast toast--' + type;
+    titleEl.textContent = title;
+    bodyEl.textContent  = body;
+
+    if (id) {
+        idRow.style.display = 'block';
+        idEl.textContent = id;
+    } else {
+        idRow.style.display = 'none';
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PROGRESS OVERLAY
+// ══════════════════════════════════════════════════════════════════════════
+function showOverlay()  { document.getElementById('progressOverlay').classList.add('active'); }
+function hideOverlay()  { document.getElementById('progressOverlay').classList.remove('active'); }
+
+function markProgressStep(n) {
+    // n = 1,2,3
+    ['pStep1','pStep2','pStep3'].forEach((id, i) => {
+        const el = document.getElementById(id);
+        el.classList.remove('active','done');
+        if (i + 1 < n)  el.classList.add('done');
+        if (i + 1 === n) el.classList.add('active');
+        // replace spinner icon on done steps
+        const icon = el.querySelector('.progress-step__icon');
+        if (i + 1 < n)  icon.innerHTML = '✓';
+        if (i + 1 === n) icon.innerHTML = '<span class="spinner"></span>';
+        if (i + 1 > n)  {
+            const syms = ['🔒','☁','⛓'];
+            icon.innerHTML = syms[i];
+        }
+    });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// COPY BUTTON
+// ══════════════════════════════════════════════════════════════════════════
+document.getElementById('copyBtn').addEventListener('click', function () {
+    const id = document.getElementById('toastId').textContent;
+    navigator.clipboard.writeText(id).then(() => {
+        this.textContent = 'Copied!';
+        setTimeout(() => { this.textContent = 'Copy'; }, 1400);
+    });
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════════════════════════════════
+submitBtn.addEventListener('click', async () => {
+    const department = document.querySelector('.dept-chip.selected').dataset.value;
+    const message    = messageEl.value.trim();
+    const password   = passwordEl.value;
+
+    // hide old toast
+    document.getElementById('toast').className = 'toast';
+
+    submitBtn.disabled = true;
+    showOverlay();
+    markProgressStep(1);
+
+    // Small visual delay so user sees "encrypting" step
+    await new Promise(r => setTimeout(r, 600));
+    markProgressStep(2);
+
+    try {
+        const resp = await fetch('/api/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ department, message, password }),
+        });
+
+        // give a moment for the overlay transition to Solana step
+        await new Promise(r => setTimeout(r, 400));
+        markProgressStep(3);
+
+        const data = await resp.json();
+        hideOverlay();
+
+        if (data.success) {
+            showToast(
+                'success',
+                '✓  Grievance submitted successfully',
+                `Your grievance has been encrypted, stored on IPFS (CID: ${data.cid}), and registered on the Solana blockchain.`,
+                data.grievance_id
+            );
+            // light reset
+            messageEl.value = '';
+            charCountEl.textContent = '0 / 2000';
+            passwordEl.value = '';
+            strengthFill.style.width = '0%';
+            strengthFill.style.background = 'var(--text-muted)';
+            strengthLabel.textContent = 'Use this password to decrypt your grievance later.';
+            document.querySelectorAll('.dept-chip').forEach(c => c.classList.remove('selected'));
+            document.querySelectorAll('.dept-chip input').forEach(i => i.checked = false);
+            setStep(1);
+        } else {
+            showToast('error', '✕  Submission failed', (data.errors || []).join(' '));
+        }
+    } catch (err) {
+        hideOverlay();
+        showToast('error', '✕  Network error', 'Could not reach the server. Check your connection and try again.');
+    }
+
+    submitBtn.disabled = false;
+    validate();
+});
+</script>
+</body>
+</html>
