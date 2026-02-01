@@ -59,12 +59,12 @@ This project explores a **new application of decentralization for civic infrastr
 
 ```text
 .
-├── app.py                 # Backend API (FastAPI)
+├── app.py                 # Backend API 
 ├── client.py              # Python client for interacting with Solana program
 ├── crypto_utils.py        # Encryption & hashing utilities
 ├── ipfs_utils.py          # IPFS upload & retrieval helpers
 ├── idl.json               # Anchor IDL for the Solana program
-├── smart_contract.rs      # Solana smart contract (Anchor)
+├── smart_contract.rs      # Solana smart contract (Rust)
 ├── templates/             # Frontend HTML templates
 ├── wallet-keypair.json    # Devnet wallet (testing only)
 ├── requirements.txt       # Python dependencies
